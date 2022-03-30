@@ -2,7 +2,7 @@ import { getDevices } from './_devices'
 
 export default async function handler(req, res) {
   try {
-    const deviceId = req.params?.deviceId
+    const { deviceId } = req.query
     const devices = await getDevices(deviceId)
     res.status(200).json(
       Object.values(devices)

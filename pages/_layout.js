@@ -4,7 +4,7 @@ export default function Layout({ children }) {
   return (
     <div className="container">
       <Head>
-        <title>Create Next App</title>
+        <title>IoT Starter</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
@@ -144,7 +144,12 @@ export default function Layout({ children }) {
           line-height: 1.5;
         }
 
-        .card .alert.alert-danger {
+        .card .alert {
+          min-height: 1.5rem;
+          line-height: 1.5;
+        }
+
+        .card .alert-danger {
             color: #721c24;
             background-color: #f8d7da;
             border-color: #f5c6cb;

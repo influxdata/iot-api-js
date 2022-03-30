@@ -12,11 +12,7 @@ export default async function handler(req, res) {
   try {
     const deviceId = JSON.parse(req.body)?.deviceId
     const devices = await createDevice(deviceId)
-    res.status(200).json(
-      Object.values(devices)
-        .filter((x) => x.deviceId && x.key) // ignore deleted or unknown devices
-        .sort((a, b) => a.deviceId.localeCompare(b.deviceId))
-    )
+    res.send(200)
   } catch(err) {
       res.status(500).json({ error: `failed to load data: ${err}` })
   }
@@ -41,7 +37,7 @@ async function createDevice(deviceId) {
       .stringField('token', authorization.token)
     writeApi.writePoint(point)
     await writeApi.close()
-    return authorization
+    return
   }
 }
 
@@ -57,7 +53,7 @@ async function createDevice(deviceId) {
 
     const buckets = await bucketsAPI.getBuckets({name: INFLUX_BUCKET, orgID: INFLUX_ORG})
     const bucketId = buckets.buckets[0]?.id
-
+    
     return await authorizationsAPI.postAuthorizations({
       body: {
         orgID: INFLUX_ORG,
@@ -75,3 +71,5 @@ async function createDevice(deviceId) {
       },
     })
   }
+
+
