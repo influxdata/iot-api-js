@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import DeviceRegistrationButton from './_deviceRegistrationForm'
+import React, { useState } from 'react'
+import DeviceRegistrationButton from './_deviceRegistrationButton'
 import DeviceList from './_deviceList'
 
-export default function() {
+export default function DevicesCard() {
   const [deviceId, setDeviceId] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)

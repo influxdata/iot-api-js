@@ -12,9 +12,7 @@ export default function DeviceList({ deviceId, onError, isLoading}) {
         setData(data)
       }
       if(data.error) {
-        console.log(data.error)
         onError(data.error)
-       
       }
       isLoading(false)
     })
