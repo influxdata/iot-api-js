@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
 export default function DeviceList({ deviceId, onError, isLoading}) {
- const [data, setData] = useState(null)
-
+  const [data, setData] = useState(null)
+  
   useEffect(() => {
     isLoading(true)
     fetch(`api/devices/${deviceId || ''}`)

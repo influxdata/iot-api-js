@@ -32,7 +32,7 @@ export default function DevicesCard() {
           </label>
           <DeviceRegistrationButton deviceId={ deviceId } onError={ handleError } isLoading={ setIsLoading } />
           <h2>Registered devices</h2>
-          <DeviceList deviceId={ deviceId } isLoading={ setIsLoading }  />
+          <DeviceList deviceId={ deviceId } isLoading={ setIsLoading } onError={ handleError }  />
         </form>
       </div>
   )
