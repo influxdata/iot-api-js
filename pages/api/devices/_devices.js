@@ -1,8 +1,10 @@
+import { InfluxDB } from '@influxdata/influxdb-client'
 import { flux } from '@influxdata/influxdb-client'
-import influxdb from '../_influxdb'
 
 const INFLUX_ORG = process.env.INFLUX_ORG
 const INFLUX_BUCKET_AUTH = process.env.INFLUX_BUCKET_AUTH
+
+const influxdb = new InfluxDB({url: process.env.INFLUX_URL, token: process.env.INFLUX_TOKEN})
 
 /**
  * Gets devices or a particular device when deviceId is specified. Tokens
@@ -45,5 +47,4 @@ const INFLUX_BUCKET_AUTH = process.env.INFLUX_BUCKET_AUTH
       })
     })
   }
-
  

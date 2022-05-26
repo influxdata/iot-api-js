@@ -1,12 +1,13 @@
+import { InfluxDB } from '@influxdata/influxdb-client'
 import { getDevices } from './_devices'
-
-import influxdb from '../_influxdb'
 import { AuthorizationsAPI, BucketsAPI } from '@influxdata/influxdb-client-apis'
 import { Point } from '@influxdata/influxdb-client'
 
 const INFLUX_ORG = process.env.INFLUX_ORG
 const INFLUX_BUCKET_AUTH = process.env.INFLUX_BUCKET_AUTH
 const INFLUX_BUCKET = process.env.INFLUX_BUCKET
+
+const influxdb = new InfluxDB({url: process.env.INFLUX_URL, token: process.env.INFLUX_TOKEN})
 
 export default async function handler(req, res) {
   try {
@@ -71,5 +72,3 @@ async function createDevice(deviceId) {
       },
     })
   }
-
-
