@@ -41,7 +41,6 @@ const influxdb = new InfluxDB({url: process.env.INFLUX_URL, token: process.env.I
         },
         error: reject,
         complete() {
-          console.log(JSON.stringify(devices))
           resolve(devices)
         },
       })
