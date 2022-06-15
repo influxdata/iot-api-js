@@ -3,7 +3,6 @@ import { flux } from '@influxdata/influxdb-client'
 
 const INFLUX_ORG = process.env.INFLUX_ORG
 const INFLUX_BUCKET_AUTH = process.env.INFLUX_BUCKET_AUTH
-
 const influxdb = new InfluxDB({url: process.env.INFLUX_URL, token: process.env.INFLUX_TOKEN})
 
 /**
@@ -24,7 +23,7 @@ const influxdb = new InfluxDB({url: process.env.INFLUX_URL, token: process.env.I
       |> filter(fn: (r) => r._measurement == "deviceauth"${deviceFilter})
       |> last()`
     const devices = {}
-    console.log(`*** QUERY *** \n ${fluxQuery}`)
+
     return await new Promise((resolve, reject) => {
       queryApi.queryRows(fluxQuery, {
         next(row, tableMeta) {
@@ -41,7 +40,6 @@ const influxdb = new InfluxDB({url: process.env.INFLUX_URL, token: process.env.I
         },
         error: reject,
         complete() {
-          console.log(JSON.stringify(devices))
           resolve(devices)
         },
       })
