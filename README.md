@@ -27,9 +27,27 @@ To run the app, do the following:
    cd ./iot-api-js
    ```
 
-4. If you haven't already, install [Node.js](https://nodejs.org/).
-5. With `node` installed, run `npm install` (included with Node.js) to install the project dependencies.
-6. Add a `./.env.local` file that contains the following configuration variables:
+4. If you haven't already, follow the [Node.js installation instructions](https://nodejs.org/) to install `node` for your operating system.
+5. To check the installed `node` version, enter the following code into your terminal:
+
+   ```bash
+   node --version
+   ```
+
+6. Follow the [Yarn installation instructions](https://yarnpkg.com/getting-started/install#nodejs-1610-1) to install the `yarn` package manager for your version of Node.js.
+7. To check the installed `yarn` version, enter the following code into your terminal:
+
+   ```bash
+   yarn --version
+   ```
+
+8. With `yarn` installed, enter the following code into your terminal to install the project dependencies:
+
+   ```bash
+   yarn
+   ```
+
+9. Add a `./.env.local` file that contains the following configuration variables:
 
    ```bash
    # Local environment secrets
@@ -43,18 +61,19 @@ To run the app, do the following:
    - **`INFLUXDB_ALL_ACCESS_TOKEN`** with your InfluxDB **All Access** token.
    - **`INFLUXDB_ORG_ID`** with your InfluxDB organization ID.
   
-7. To start the application in **development** mode, enter the following code into the terminal:
+10. To start the application in **development** mode, enter the following code into the terminal:
 
-   ```bash
-   npm dev
-   ```
+     ```bash
+     yarn dev -p 3001
+     ```
 
-   The application server starts with the following output:
+     The application server starts with the following output:
 
-   ```bash
-   > dev
-   > next dev
-   ready - started server on 0.0.0.0:3000, url: http://localhost:3000
-   ```
+     ```bash
+     > dev
+     > next dev
+     ready - started server on 0.0.0.0:3001, url: http://localhost:3001
+     ```
 
-8. In your browser, visit [http://localhost:3000/devices](http://localhost:3000/devices) to view the application.
+11. In your browser, visit <http://localhost:3001/devices> to view the API output.
+12. Next, you can use the example [iot-api-ui](https://github.com/influxdata/iot-api-ui) React frontend to interact with the API.
