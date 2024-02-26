@@ -13,26 +13,34 @@ const influxdb = new InfluxDB({url: process.env.INFLUX_URL, token: process.env.I
  * @returns promise with an Record<deviceId, {deviceId, createdAt, updatedAt, key, token}>.
  */
  export async function getDevices(deviceId) {
+  console.log(`getDevices: deviceId=${deviceId}`)
     const queryApi = influxdb.getQueryApi(INFLUX_ORG)
+    //console.log(`getDevices: queryApi=${JSON.stringify(queryApi)} \n`)
     const deviceFilter =
       deviceId !== undefined
-        ? flux` and r.deviceId == "${deviceId}"`
-        : flux` and r._field != "token"`
+        ? flux`r.site_id == "${deviceId}"`
+        : flux`r._field != "token"`
+    //console.log(`getDevices: deviceFilter :::::::: ${deviceFilter}`)
     const fluxQuery = flux`from(bucket:${INFLUX_BUCKET_AUTH})
       |> range(start: 0)
-      |> filter(fn: (r) => r._measurement == "deviceauth"${deviceFilter})
+      |> filter(fn: (r) =>${deviceFilter})
       |> last()`
+    
+    console.log(`getDevices: fluxQuery = ${fluxQuery}`)
     const devices = {}
 
     return await new Promise((resolve, reject) => {
       queryApi.queryRows(fluxQuery, {
         next(row, tableMeta) {
           const o = tableMeta.toObject(row)
-          const deviceId = o.deviceId
+          //console.log(`getDevices: o = ${JSON.stringify(o)}`)
+          const deviceId = o.site_id
+          //console.log(`getDevices: deviceId = ${deviceId}`)
           if (!deviceId) {
             return
           }
           const device = devices[deviceId] || (devices[deviceId] = {deviceId})
+          //console.log(`getDevices: device = ${JSON.stringify(device)}`)
           device[o._field] = o._value
           if (!device.updatedAt || device.updatedAt < o._time) {
             device.updatedAt = o._time
