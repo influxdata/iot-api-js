@@ -8,9 +8,10 @@
   "dependencies": {
     "@influxdata/influxdb-client": "^1.24.0",
     "@influxdata/influxdb-client-apis": "^1.24.0",
-    "next": "latest",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "next": "^14.2.3",
+    "postcss": "^8.4.31",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "resolutions": {
     "postcss": "^8.4.31"
