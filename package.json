@@ -8,7 +8,7 @@
   "dependencies": {
     "@influxdata/influxdb-client": "^1.24.0",
     "@influxdata/influxdb-client-apis": "^1.24.0",
-    "next": "^14.2.3",
+    "next": "^14.2.10",
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
