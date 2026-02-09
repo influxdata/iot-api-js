@@ -1,5 +1,5 @@
 import { getDevices } from './_devices'
-import { write, config, generateDeviceToken } from '../../../lib/influxdb'
+import { write, config, generateDeviceToken, Point } from '../../../lib/influxdb'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -46,13 +46,16 @@ async function createDevice(deviceId) {
   const deviceToken = generateDeviceToken()
   const deviceKey = `device_${deviceId}_${Date.now()}`
 
-  // Write device auth record using line protocol
+  // Write device auth record using Point class
   // Table: deviceauth
   // Tags: deviceId
   // Fields: key, token
-  const lineProtocol = `deviceauth,deviceId=${escapeTagValue(deviceId)} key="${escapeFieldValue(deviceKey)}",token="${escapeFieldValue(deviceToken)}"`
+  const point = Point.measurement('deviceauth')
+    .setTag('deviceId', deviceId)
+    .setStringField('key', deviceKey)
+    .setStringField('token', deviceToken)
 
-  await write(lineProtocol, config.databaseAuth)
+  await write(point.toLineProtocol(), config.databaseAuth)
 
   console.log(`Device created: ${deviceId}`)
 
@@ -64,36 +67,4 @@ async function createDevice(deviceId) {
     host: config.host,
     message: 'Device registered successfully. Use the provided token for device authentication.',
   }
-}
-
-/**
- * Escapes a tag value for line protocol.
- * Tags cannot contain spaces, commas, or equals signs without escaping.
- * @param {string} value - The tag value to escape
- * @returns {string} The escaped tag value
- */
-function escapeTagValue(value) {
-  if (typeof value !== 'string') {
-    return value
-  }
-  return value
-    .replace(/\\/g, '\\\\')
-    .replace(/ /g, '\\ ')
-    .replace(/,/g, '\\,')
-    .replace(/=/g, '\\=')
-}
-
-/**
- * Escapes a string field value for line protocol.
- * String fields are wrapped in quotes and need backslash and quote escaping.
- * @param {string} value - The field value to escape
- * @returns {string} The escaped field value
- */
-function escapeFieldValue(value) {
-  if (typeof value !== 'string') {
-    return value
-  }
-  return value
-    .replace(/\\/g, '\\\\')
-    .replace(/"/g, '\\"')
 }
