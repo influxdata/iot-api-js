@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "@influxdata/influxdb3-client": "^2.0.0",
-    "next": "^14.2.35",
+    "next": "^16.1.5",
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
