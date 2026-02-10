@@ -35,7 +35,7 @@ services:
   #      curl -X POST "http://localhost:8181/api/v3/configure/database" \
   #        -H "Authorization: Bearer $TOKEN" \
   #        -H "Content-Type: application/json" \
-  #        -d '{"db": "iot_center_auth"}'
+  #        -d '{"db": "iot_center_devices"}'
   #
   # ENDPOINTS:
   #   - API: http://localhost:8181
