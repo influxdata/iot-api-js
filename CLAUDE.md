@@ -51,7 +51,7 @@ Copy `.env.development` values to `.env.local` and customize:
 INFLUX_HOST=http://localhost:8181
 INFLUX_TOKEN=your-token
 INFLUX_DATABASE=iot_center
-INFLUX_DATABASE_AUTH=iot_center_auth
+INFLUX_DATABASE_AUTH=iot_center_devices
 ```
 
 ## Testing
