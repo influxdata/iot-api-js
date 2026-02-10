@@ -87,6 +87,8 @@ yarn test
 
 ## Code Patterns
 
+Use SQL or InfluxQL to query data.
+
 ### SQL Queries (InfluxDB 3)
 
 Query InfluxDB 3 using SQL:
