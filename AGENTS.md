@@ -89,7 +89,7 @@ yarn test
 
 ### SQL Queries (InfluxDB 3)
 
-InfluxDB 3 uses SQL instead of Flux:
+Query InfluxDB 3 using SQL:
 
 ```javascript
 // Query devices
