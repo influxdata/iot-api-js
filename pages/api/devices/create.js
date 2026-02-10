@@ -1,32 +1,38 @@
-import { getDevices } from './_devices';
-import { write, config, generateDeviceToken } from '../../../lib/influxdb';
+import { getDevices } from './_devices'
+import { write, config, generateDeviceToken, Point } from '../../../lib/influxdb'
+
+// Valid deviceId pattern: alphanumeric, hyphens, underscores, 1-64 chars
+const DEVICE_ID_PATTERN = /^[a-zA-Z0-9_-]{1,64}$/
 
 export default async function handler(req, res) {
 	if (req.method !== 'POST') {
 		return res.status(405).json({ error: 'Method not allowed' });
 	}
 
-	try {
-		let body = req.body;
-		if (typeof body === 'string') {
-			try {
-				body = JSON.parse(body);
-			} catch (parseErr) {
-				return res.status(400).json({ error: 'Invalid JSON in request body' });
-			}
-		}
+  try {
+    // Handle both pre-parsed objects and JSON strings
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body
+    const deviceId = body?.deviceId
 
 		const deviceId = body?.deviceId;
 		if (!deviceId) {
 			return res.status(400).json({ error: 'deviceId is required' });
 		}
 
-		const result = await createDevice(deviceId);
-		res.status(200).json(result);
-	} catch (err) {
-		console.error('Device creation error:', err);
-		res.status(500).json({ error: `Failed to create device: ${err.message || err}` });
-	}
+    // Validate deviceId format to prevent injection attacks
+    if (!DEVICE_ID_PATTERN.test(deviceId)) {
+      return res.status(400).json({
+        error: 'Invalid deviceId format',
+        hint: 'deviceId must be 1-64 characters, alphanumeric with hyphens and underscores only',
+      })
+    }
+
+    const result = await createDevice(deviceId)
+    res.status(200).json(result)
+  } catch (err) {
+    console.error('Device creation error:', err)
+    res.status(500).json({ error: `Failed to create device: ${err.message || err}` })
+  }
 }
 
 /**
@@ -54,13 +60,16 @@ async function createDevice(deviceId) {
 	const deviceToken = generateDeviceToken();
 	const deviceKey = `device_${deviceId}_${Date.now()}`;
 
-	// Write device auth record using line protocol
-	// Table: deviceauth
-	// Tags: deviceId
-	// Fields: key, token
-	const lineProtocol = `deviceauth,deviceId=${escapeTagValue(deviceId)} key="${escapeFieldValue(deviceKey)}",token="${escapeFieldValue(deviceToken)}"`;
+  // Write device auth record using Point class
+  // Table: deviceauth
+  // Tags: deviceId
+  // Fields: key, token
+  const point = Point.measurement('deviceauth')
+    .setTag('deviceId', deviceId)
+    .setStringField('key', deviceKey)
+    .setStringField('token', deviceToken)
 
-	await write(lineProtocol, config.databaseAuth);
+  await write(point.toLineProtocol(), config.databaseAuth)
 
 	console.log(`Device created: ${deviceId}`);
 
@@ -72,30 +81,4 @@ async function createDevice(deviceId) {
 		host: config.host,
 		message: 'Device registered successfully. Use the provided token for device authentication.',
 	};
-}
-
-/**
- * Escapes a tag value for line protocol.
- * Tags cannot contain spaces, commas, or equals signs without escaping.
- * @param {string} value - The tag value to escape
- * @returns {string} The escaped tag value
- */
-function escapeTagValue(value) {
-	if (typeof value !== 'string') {
-		return value;
-	}
-	return value.replace(/\\/g, '\\\\').replace(/ /g, '\\ ').replace(/,/g, '\\,').replace(/=/g, '\\=');
-}
-
-/**
- * Escapes a string field value for line protocol.
- * String fields are wrapped in quotes and need backslash and quote escaping.
- * @param {string} value - The field value to escape
- * @returns {string} The escaped field value
- */
-function escapeFieldValue(value) {
-	if (typeof value !== 'string') {
-		return value;
-	}
-	return value.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 }

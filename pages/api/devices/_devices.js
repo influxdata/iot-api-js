@@ -2,31 +2,30 @@ import { query, config } from '../../../lib/influxdb'
 
 /**
  * Gets devices or a particular device when deviceId is specified.
- * Tokens are not returned unless deviceId is specified.
- * It can also return devices with empty/unknown key - such devices
- * can be ignored (no valid authorization is associated).
+ * Tokens are NEVER returned via public API to prevent unauthorized access.
  *
  * @param {string} [deviceId] - Optional deviceId to filter by
+ * @param {Object} [options] - Query options
+ * @param {boolean} [options.includeToken=false] - Include token (internal use only)
  * @returns {Promise<Record<string, {deviceId: string, key: string, token?: string, updatedAt: string}>>}
  */
-export async function getDevices(deviceId) {
+export async function getDevices(deviceId, options = {}) {
+  const { includeToken = false } = options
   const database = config.databaseAuth
 
-  // Build SQL query
-  // When deviceId is specified, return all fields including token
-  // Otherwise, exclude token field for security
+  // Build SQL query - only include token field for internal verification
   let sql
   if (deviceId !== undefined) {
-    // Get specific device with token
+    const tokenField = includeToken ? ', token' : ''
     sql = `
-      SELECT time, deviceId, key, token
+      SELECT time, deviceId, key${tokenField}
       FROM deviceauth
       WHERE deviceId = '${escapeString(deviceId)}'
       ORDER BY time DESC
       LIMIT 1
     `
   } else {
-    // Get all devices without tokens
+    // Get all devices - never include tokens in list view
     sql = `
       SELECT time, deviceId, key
       FROM deviceauth
@@ -60,8 +59,8 @@ export async function getDevices(deviceId) {
       updatedAt: row.time,
     }
 
-    // Only include token when querying specific device
-    if (deviceId !== undefined && row.token) {
+    // Only include token for internal calls that explicitly request it
+    if (includeToken && row.token) {
       devices[id].token = row.token
     }
   }
