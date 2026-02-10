@@ -29,7 +29,7 @@ export default async function handler(req, res) {
  * With InfluxDB 3 Core, you can use application-level admin tokens. Core doesn't provide fine-grained tokens.
  *
  * @param {string} deviceId - The unique device identifier
- * @returns {Promise<{deviceId: string, key: string, message: string}>}
+ * @returns {Promise<{deviceId: string, key: string, token: string, database: string, host: string, message: string}>}
  */
 async function createDevice(deviceId) {
 	// Check if device already exists
