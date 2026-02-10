@@ -31,3 +31,6 @@ yarn-error.log*
 
 # InfluxDB 3 local data
 test/.influxdb3/
+
+# Git worktrees
+.worktrees/
