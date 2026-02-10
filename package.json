@@ -3,15 +3,19 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "jest"
   },
   "dependencies": {
-    "@influxdata/influxdb-client": "^1.24.0",
-    "@influxdata/influxdb-client-apis": "^1.24.0",
+    "@influxdata/influxdb3-client": "^2.0.0",
     "next": "^16.1.5",
     "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "node-mocks-http": "^1.14.1"
   },
   "resolutions": {
     "postcss": "^8.4.31"
