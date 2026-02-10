@@ -28,12 +28,12 @@ This is a **sample application** for InfluxData documentation tutorials. It demo
 └─────────────────┘     └─────────────────┘     └─────────────────┘
                               │
                               ▼
-                        ┌─────────────────┐
-                        │  Two databases: │
-                        │  - iot_center   │
-                        │  - iot_center_  │
-                        │    auth         │
-                        └─────────────────┘
+                        ┌─────────────────────┐
+                        │  Two databases:     │
+                        │  - iot_center       │
+                        │ - iot_center        │
+                        │ - iot_center_devices│
+                        └─────────────────────┘
 ```
 
 ## Key Files
