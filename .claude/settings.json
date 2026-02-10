@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm:*)",
+      "Bash(yarn:*)",
+      "Bash(npx:*)",
+      "Bash(node:*)",
+      "Bash(curl:*)",
+      "Bash(gh:*)",
+      "Bash(jq:*)",
+      "Bash(mkdir:*)",
+      "Bash(docker:*)",
+      "Bash(docker compose:*)",
+      "Edit",
+      "Read",
+      "Write",
+      "Grep",
+      "Glob",
+      "LS"
+    ],
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./secrets/**)"
+    ],
+    "ask": [
+      "Bash(git push:*)"
+    ]
+  }
+}
