@@ -94,7 +94,7 @@ await write('measurement,tag=value field=1', database)
 
 ### Application-Level Tokens
 
-This app uses application-managed tokens stored in the database (not InfluxDB-native auth tokens). Tokens are:
+This app uses application-managed tokens stored in the database. Tokens are:
 - Generated via `generateDeviceToken()` in `lib/influxdb.js`
 - Stored in the `deviceauth` measurement
 - Never exposed via public API responses
