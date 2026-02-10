@@ -7,8 +7,16 @@ export default async function handler(req, res) {
 	}
 
 	try {
-		const deviceId = JSON.parse(req.body)?.deviceId;
+		let body = req.body;
+		if (typeof body === 'string') {
+			try {
+				body = JSON.parse(body);
+			} catch (parseErr) {
+				return res.status(400).json({ error: 'Invalid JSON in request body' });
+			}
+		}
 
+		const deviceId = body?.deviceId;
 		if (!deviceId) {
 			return res.status(400).json({ error: 'deviceId is required' });
 		}
