@@ -1,16 +1,29 @@
 import { getDevices } from './_devices'
 import { write, config, generateDeviceToken, Point } from '../../../lib/influxdb'
 
+// Valid deviceId pattern: alphanumeric, hyphens, underscores, 1-64 chars
+const DEVICE_ID_PATTERN = /^[a-zA-Z0-9_-]{1,64}$/
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
   try {
-    const deviceId = JSON.parse(req.body)?.deviceId
+    // Handle both pre-parsed objects and JSON strings
+    const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body
+    const deviceId = body?.deviceId
 
     if (!deviceId) {
       return res.status(400).json({ error: 'deviceId is required' })
+    }
+
+    // Validate deviceId format to prevent injection attacks
+    if (!DEVICE_ID_PATTERN.test(deviceId)) {
+      return res.status(400).json({
+        error: 'Invalid deviceId format',
+        hint: 'deviceId must be 1-64 characters, alphanumeric with hyphens and underscores only',
+      })
     }
 
     const result = await createDevice(deviceId)

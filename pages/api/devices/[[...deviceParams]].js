@@ -1,14 +1,53 @@
 import { getMeasurements } from '../measurements'
 import { getDevices } from './_devices'
 
+// Maximum query length to prevent abuse
+const MAX_QUERY_LENGTH = 2000
+
+// Blocked SQL keywords (case-insensitive)
+const BLOCKED_PATTERNS = [
+  /\b(DROP|DELETE|UPDATE|INSERT|ALTER|CREATE|TRUNCATE|GRANT|REVOKE)\b/i,
+  /\b(EXEC|EXECUTE|CALL)\b/i,
+  /;\s*\w/i, // Multiple statements
+]
+
+/**
+ * Validates a SQL query for safety.
+ * Only allows SELECT queries without dangerous operations.
+ * Note: This is basic validation for a sample app - production apps
+ * should use parameterized queries and proper authorization.
+ */
+function validateQuery(query) {
+  if (typeof query !== 'string') {
+    return { valid: false, error: 'Query must be a string' }
+  }
+
+  if (query.length > MAX_QUERY_LENGTH) {
+    return { valid: false, error: `Query exceeds maximum length of ${MAX_QUERY_LENGTH} characters` }
+  }
+
+  const trimmed = query.trim()
+  if (!trimmed.toUpperCase().startsWith('SELECT')) {
+    return { valid: false, error: 'Only SELECT queries are allowed' }
+  }
+
+  for (const pattern of BLOCKED_PATTERNS) {
+    if (pattern.test(query)) {
+      return { valid: false, error: 'Query contains blocked operations' }
+    }
+  }
+
+  return { valid: true }
+}
+
 /**
  * API handler for device-related endpoints:
  *
  * GET /api/devices - List all registered devices
  * GET /api/devices/:deviceId - Get a specific device
- * POST /api/devices/:deviceId/measurements - Query measurements for a device
+ * POST /api/devices/:deviceId/measurements - Query measurements (SELECT only)
  *
- * Note: For measurement queries, the `query` parameter must be a SQL query.
+ * Note: For measurement queries, the `query` parameter must be a SELECT SQL query.
  * Flux queries are not supported in InfluxDB 3.
  *
  * Example SQL query for measurements:
@@ -34,9 +73,15 @@ export default async function handler(req, res) {
       if (!query) {
         return res.status(400).json({
           error: 'Missing query parameter',
-          hint: 'Provide a SQL query in the request body. Flux is not supported in InfluxDB 3.',
+          hint: 'Provide a SQL SELECT query in the request body. Flux is not supported in InfluxDB 3.',
           example: "SELECT * FROM home WHERE time >= now() - INTERVAL '1 hour' ORDER BY time DESC",
         })
+      }
+
+      // Validate query before execution
+      const validation = validateQuery(query)
+      if (!validation.valid) {
+        return res.status(400).json({ error: validation.error })
       }
 
       const data = await getMeasurements(query)
