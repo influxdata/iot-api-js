@@ -1,0 +1,74 @@
+# Docker Compose for IoT API JS
+# Provides InfluxDB 3 Core for local development and testing.
+name: iot-api-js
+
+secrets:
+  influxdb3-core-token:
+    file: test/.influxdb3/core/.token
+
+services:
+  # ============================================================================
+  # InfluxDB 3 Core
+  # ============================================================================
+  # Local development instance with file-based storage.
+  #
+  # USAGE:
+  #   docker compose up -d influxdb3-core
+  #
+  # FIRST-TIME SETUP:
+  #   1. Create directories:
+  #      mkdir -p test/.influxdb3/core/data test/.influxdb3/core/plugins
+  #
+  #   2. Generate token:
+  #      openssl rand -hex 32 > test/.influxdb3/core/.token
+  #      chmod 600 test/.influxdb3/core/.token
+  #
+  #   3. Start service:
+  #      docker compose up -d influxdb3-core
+  #
+  #   4. Create databases:
+  #      TOKEN=$(cat test/.influxdb3/core/.token)
+  #      curl -X POST "http://localhost:8181/api/v3/configure/database" \
+  #        -H "Authorization: Bearer $TOKEN" \
+  #        -H "Content-Type: application/json" \
+  #        -d '{"db": "iot_center"}'
+  #      curl -X POST "http://localhost:8181/api/v3/configure/database" \
+  #        -H "Authorization: Bearer $TOKEN" \
+  #        -H "Content-Type: application/json" \
+  #        -d '{"db": "iot_center_devices"}'
+  #
+  # ENDPOINTS:
+  #   - API: http://localhost:8181
+  #   - Health: http://localhost:8181/health
+  #   - Ping: http://localhost:8181/ping
+  # ============================================================================
+  influxdb3-core:
+    container_name: influxdb3-core
+    image: influxdb:3-core
+    pull_policy: always
+    ports:
+      - 8181:8181
+    command:
+      - influxdb3
+      - serve
+      - --node-id=node0
+      - --object-store=file
+      - --data-dir=/var/lib/influxdb3/data
+      - --plugin-dir=/var/lib/influxdb3/plugins
+      - --admin-token-file=/run/secrets/influxdb3-core-token
+      - --log-filter=info
+    volumes:
+      - type: bind
+        source: test/.influxdb3/core/data
+        target: /var/lib/influxdb3/data
+      - type: bind
+        source: test/.influxdb3/core/plugins
+        target: /var/lib/influxdb3/plugins
+    secrets:
+      - influxdb3-core-token
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8181/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
