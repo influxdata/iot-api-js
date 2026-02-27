@@ -4,49 +4,44 @@ This repository has multiple instruction files for different AI tools and use ca
 
 ## Quick Navigation
 
-| If you are... | Use this file | Purpose |
-|---------------|---------------|---------|
-| **GitHub Copilot** | [../AGENTS.md](../AGENTS.md) | Development patterns, code examples |
-| **Claude, ChatGPT, Gemini** | [../AGENTS.md](../AGENTS.md) | Comprehensive development guide |
-| **Claude with MCP** | [../CLAUDE.md](../CLAUDE.md) | Quick reference with skill pointers |
+| If you are... | Start here |
+|---------------|------------|
+| **GitHub Copilot** | [../AGENTS.md](../AGENTS.md) |
+| **Claude, ChatGPT, Gemini** | [../AGENTS.md](../AGENTS.md) |
+| **Claude with MCP** | [../CLAUDE.md](../CLAUDE.md) |
 
 ## File Organization
 
 ```
 iot-api-js/
+├── docs/                             # Detailed documentation
+│   ├── architecture.md               # System design, project structure
+│   ├── development.md                # Setup, testing, debugging
+│   ├── api-reference.md              # API endpoints
+│   ├── code-patterns.md              # InfluxDB client usage
+│   └── contributing.md               # Style guidelines
 ├── .claude/
-│   ├── settings.json              # Claude permissions
-│   └── skills/
-│       └── run-tests/SKILL.md     # Test execution workflow
+│   ├── settings.json                 # Claude permissions
+│   └── skills/run-tests/SKILL.md     # Test execution workflow
 ├── .github/
-│   └── INSTRUCTIONS.md            # THIS FILE - Navigation guide
-├── AGENTS.md                      # Comprehensive AI assistant guide
-├── CLAUDE.md                      # Claude with MCP quick reference
-└── README.md                      # User-facing documentation
+│   └── INSTRUCTIONS.md               # THIS FILE
+├── AGENTS.md                         # AI assistant quick reference
+├── CLAUDE.md                         # Claude with MCP quick reference
+└── README.md                         # User-facing documentation
 ```
 
-## What's in Each File
+## Documentation
 
-**[../CLAUDE.md](../CLAUDE.md)** - Quick reference for Claude:
-- Project overview
-- Quick commands
-- Structure summary
-- Links to skills
-
-**[../AGENTS.md](../AGENTS.md)** - Comprehensive guide:
-- Architecture diagram
-- Development workflow
-- Code patterns and examples
-- Common tasks
-- Style guidelines
-
-**[../README.md](../README.md)** - User documentation:
-- Setup instructions
-- API usage
-- Troubleshooting
+| Topic | Location |
+|-------|----------|
+| System architecture | [../docs/architecture.md](../docs/architecture.md) |
+| Development setup | [../docs/development.md](../docs/development.md) |
+| API endpoints | [../docs/api-reference.md](../docs/api-reference.md) |
+| Code patterns | [../docs/code-patterns.md](../docs/code-patterns.md) |
+| Contributing | [../docs/contributing.md](../docs/contributing.md) |
 
 ## Getting Started
 
 1. **New to the repository?** Start with [../README.md](../README.md)
-2. **Using AI assistants?** Read [../AGENTS.md](../AGENTS.md)
+2. **Using AI assistants?** Read [../AGENTS.md](../AGENTS.md) then explore [../docs/](../docs/)
 3. **Using Claude with MCP?** Check [../CLAUDE.md](../CLAUDE.md) and [../.claude/](../.claude/)
